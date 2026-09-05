@@ -1,0 +1,24 @@
+{
+  "n_scored": 22006,
+  "n_actionable": 10307,
+  "score_min": -59.4708,
+  "score_max": 2.8172,
+  "action_counts": {
+    "monitor": 11699,
+    "optimize_title_and_meta": 10295,
+    "refresh_and_optimize_cta": 12
+  },
+  "reason_code_counts": {
+    "ctr_at_or_above_tier": 11699,
+    "large_ctr_gap": 7376,
+    "moderate_ctr_gap": 2919,
+    "stale_low_ctr": 12
+  },
+  "tier_median_ctr": {
+    "deep": 0.0,
+    "page_1": 0.23,
+    "page_3_5": 0.06,
+    "striking": 0.15,
+    "top_3": 0.19
+  }
+}
