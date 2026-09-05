@@ -1,0 +1,25 @@
+{
+  "snapshot_date": "week04_data",
+  "working_set_n": 22006,
+  "n_clients": 30,
+  "label_base_rate": 0.1001,
+  "tier_median_ctr": {
+    "deep": 0.0,
+    "page_1": 0.23,
+    "page_3_5": 0.06,
+    "striking": 0.15,
+    "top_3": 0.19
+  },
+  "n_actionable": 10307,
+  "n_monitor": 11699,
+  "model_cv_auc_mean": 0.922,
+  "model_cv_auc_std": 0.035,
+  "rule_precision_at_50": 0.996,
+  "rule_precision_at_20": 1.0,
+  "retrain_triggers": {
+    "base_rate_drift_threshold_pp": 3.0,
+    "tier_ctr_relative_shift_pct": 20.0,
+    "model_auc_drop_threshold": 0.05,
+    "precision_at_50_drop_threshold": 0.1
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "total_actionable_pages": 10307,
+  "recommended_sprint_size": 50,
+  "top50_total_expected_click_gain": 6184,
+  "top10_total_expected_click_gain": 2523,
+  "top50_precision_at_p25_threshold": 1.0,
+  "median_expected_gain_per_page_top50": 70,
+  "human_review_minutes_per_page_est": 10,
+  "total_review_budget_mins_per_sprint": 500
+}
