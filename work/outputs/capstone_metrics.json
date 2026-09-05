@@ -1,0 +1,14 @@
+{
+  "lane": "Lane 4: CTR / Engagement Opportunity Scoring",
+  "dataset_size": 22006,
+  "client_count": 30,
+  "base_rate_pct": 10.01,
+  "rf_group_cv_auc": 0.922,
+  "rf_p100": 0.656,
+  "precision_lift_vs_base": 6.56,
+  "figures": [
+    "fig_precision_at_k.png",
+    "fig_score_by_tier.png",
+    "fig_action_distribution.png"
+  ]
+}

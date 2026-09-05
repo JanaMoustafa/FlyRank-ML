@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO CTR Opportunity Scoring at Scale | FlyRank Research</title>
+  <meta name="description" content="A machine learning research paper on identifying high-potential organic search click-through rate deficits across 22,000+ enterprise URLs using the FlyRank ML dataset.">
+  <meta name="author" content="Jana Moustafa">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-hover: rgba(30, 41, 59, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(99, 102, 241, 0.3);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-subtle: #6b7280;
+      --accent-primary: #6366f1;
+      --accent-secondary: #a855f7;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-serif: 'Newsreader', Georgia, serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --max-width: 960px;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-glow: 0 10px 30px -10px rgba(99, 102, 241, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.7;
+      font-size: 16px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Ambient background lighting */
+    .bg-gradient-top {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
+      height: 450px;
+      background: radial-gradient(ellipse at 50% -10%, rgba(99, 102, 241, 0.18), rgba(168, 85, 247, 0.08), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(10, 14, 23, 0.85);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-tag {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-cyan);
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-link:hover {
+      color: #ffffff;
+    }
+
+    .github-badge-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.4rem 0.85rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .github-badge-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--accent-primary);
+      transform: translateY(-1px);
+    }
+
+    main.container {
+      position: relative;
+      z-index: 1;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .lane-pill {
+      display: inline-block;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #a5b4fc;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+      border-radius: 20px;
+      margin-bottom: 1.25rem;
+    }
+
+    h1.paper-title {
+      font-family: var(--font-serif);
+      font-size: 2.75rem;
+      font-weight: 600;
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 1.25rem;
+    }
+
+    p.paper-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 780px;
+      margin: 0 auto 1.75rem;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+
+    .paper-meta {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.88rem;
+      color: var(--text-subtle);
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .meta-author {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* Stat Banner Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 2.5rem 0 3.5rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      text-align: center;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .stat-number {
+      font-size: 1.9rem;
+      font-weight: 800;
+      font-family: var(--font-sans);
+      color: #ffffff;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-number.gradient-text {
+      background: linear-gradient(135deg, #a5b4fc 0%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Abstract Box */
+    .abstract-box {
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.7) 0%, rgba(17, 24, 39, 0.7) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 3.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+    }
+
+    .abstract-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+    }
+
+    .abstract-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .abstract-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a5b4fc;
+    }
+
+    .abstract-text {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      line-height: 1.8;
+      color: #e2e8f0;
+    }
+
+    /* Content Layout */
+    article.paper-body {
+      display: flex;
+      flex-direction: column;
+      gap: 3.5rem;
+    }
+
+    section.paper-section {
+      scroll-margin-top: 5rem;
+    }
+
+    .section-header {
+      margin-bottom: 1.25rem;
+      position: relative;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-primary);
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    h2.section-title {
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+
+    p.lead-p {
+      font-size: 1.05rem;
+      color: #cbd5e1;
+      margin-bottom: 1.25rem;
+      line-height: 1.75;
+    }
+
+    p.body-p {
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    /* Callout Card */
+    .callout-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+
+    .callout-card.accent-purple {
+      border-left: 4px solid var(--accent-primary);
+    }
+
+    .callout-card.accent-amber {
+      border-left: 4px solid var(--accent-amber);
+    }
+
+    .callout-card.accent-emerald {
+      border-left: 4px solid var(--accent-emerald);
+    }
+
+    .callout-card.accent-rose {
+      border-left: 4px solid var(--accent-rose);
+    }
+
+    .callout-heading {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Comparison Table */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin: 1.75rem 0;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+
+    table.data-table th {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.9rem 1.25rem;
+      font-weight: 600;
+      color: #ffffff;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    table.data-table td {
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #cbd5e1;
+    }
+
+    table.data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    table.data-table tr.highlight-row {
+      background: rgba(99, 102, 241, 0.1);
+      font-weight: 600;
+    }
+
+    table.data-table tr.highlight-row td {
+      color: #ffffff;
+    }
+
+    .badge-win {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* Figures & Charts */
+    .figure-wrapper {
+      margin: 2rem 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .figure-image {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius-sm);
+      display: block;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .figure-caption {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      border-left: 2px solid var(--accent-primary);
+      padding-left: 0.85rem;
+    }
+
+    .figure-caption strong {
+      color: #ffffff;
+    }
+
+    /* Grid for Action Playbook */
+    .playbook-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin: 1.75rem 0;
+    }
+
+    .playbook-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      transition: all 0.2s ease;
+    }
+
+    .playbook-card:hover {
+      border-color: var(--border-accent);
+      background: var(--bg-card-hover);
+    }
+
+    .playbook-code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      display: inline-block;
+      margin-bottom: 0.4rem;
+    }
+
+    .playbook-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+    }
+
+    .playbook-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Two-column layout helper */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      h1.paper-title {
+        font-size: 2.1rem;
+      }
+    }
+
+    /* Code & Checklist */
+    pre.code-block {
+      background: #05070d;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    ul.check-list {
+      list-style: none;
+      margin: 1rem 0;
+    }
+
+    ul.check-list li {
+      position: relative;
+      padding-left: 1.75rem;
+      margin-bottom: 0.6rem;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+
+    ul.check-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--accent-emerald);
+      font-weight: 800;
+    }
+
+    ul.no-go-list {
+      list-style: none;
+      margin: 1rem 0;
+    }
+
+    ul.no-go-list li {
+      position: relative;
+      padding-left: 1.75rem;
+      margin-bottom: 0.6rem;
+      color: #fca5a5;
+      font-size: 0.95rem;
+    }
+
+    ul.no-go-list li::before {
+      content: '✕';
+      position: absolute;
+      left: 0;
+      color: var(--accent-rose);
+      font-weight: 800;
+    }
+
+    /* Acknowledgments & Credit Card */
+    .credit-section {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(168, 85, 247, 0.08) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      text-align: center;
+      margin-top: 4rem;
+    }
+
+    .credit-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.75rem;
+    }
+
+    .credit-text {
+      color: #cbd5e1;
+      font-size: 1rem;
+      max-width: 650px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.7;
+    }
+
+    .credit-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent-primary);
+      color: #ffffff;
+      padding: 0.65rem 1.4rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .credit-link-btn:hover {
+      background: #4f46e5;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+    }
+
+    /* Footer */
+    footer.site-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      color: var(--text-subtle);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-gradient-top"></div>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header" id="top-nav">
+    <div class="header-inner">
+      <a href="#top" class="brand-tag">
+        <span class="brand-dot"></span>
+        <span>FlyRank ML Research</span>
+      </a>
+      <nav class="header-nav">
+        <a href="#abstract" class="nav-link">Abstract</a>
+        <a href="#methodology" class="nav-link">Methodology</a>
+        <a href="#results" class="nav-link">Results</a>
+        <a href="#playbook" class="nav-link">Playbook</a>
+        <a href="#reproducibility" class="nav-link">Reproducibility</a>
+        <a href="https://github.com/JanaMoustafa/FlyRank-ML" target="_blank" class="github-badge-btn">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>GitHub</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" id="top">
+
+    <!-- Hero Header -->
+    <header class="hero">
+      <span class="lane-pill">Lane 4 · CTR &amp; Engagement Opportunity Scoring</span>
+      <h1 class="paper-title">SEO CTR Opportunity Scoring at Scale</h1>
+      <p class="paper-subtitle">
+        Prioritizing Enterprise Content Interventions from Search Console &amp; GA4 Telemetry Under Cross-Client Grouped Validation
+      </p>
+      <div class="paper-meta">
+        <span class="meta-item"><span class="meta-author">Jana Moustafa</span></span>
+        <span class="meta-item">·</span>
+        <span class="meta-item">FlyRank ML Engineering Track</span>
+        <span class="meta-item">·</span>
+        <span class="meta-item">March 2026</span>
+        <span class="meta-item">·</span>
+        <span class="meta-item"><a href="https://github.com/JanaMoustafa/FlyRank-ML" target="_blank" style="color:var(--accent-primary);text-decoration:none;">Repo &amp; Notebooks ↗</a></span>
+      </div>
+    </header>
+
+    <!-- Key Metrics Stats Banner -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">22,006</div>
+        <div class="stat-label">Production URLs Evaluated</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number gradient-text">0.922</div>
+        <div class="stat-label">GroupKFold CV ROC-AUC</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">65.6%</div>
+        <div class="stat-label">Precision@100 Top Queue</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number gradient-text">6.56×</div>
+        <div class="stat-label">Lift Over Base Rate</div>
+      </div>
+    </div>
+
+    <!-- Section 1: Abstract -->
+    <section class="abstract-box" id="abstract">
+      <div class="abstract-header">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" style="color:var(--accent-primary);"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        <span class="abstract-title">Abstract (Canonical Summary)</span>
+      </div>
+      <p class="abstract-text">
+        Enterprise search engine optimization teams manage catalogs of tens of thousands of indexable URLs but lack disciplined, data-driven queues indicating where title rewrites or snippet refreshes will yield the greatest incremental organic clicks. In this work, we analyze 22,006 production URL performance records across 30 enterprise domains from the FlyRank warehouse release to detect pages exhibiting severe click-through rate (CTR) underperformance relative to their organic position tier. We formulate a leak-free feature space comprising 5 behavioral, positional, and content freshness indicators knowable strictly at the decision moment, deliberately excluding contemporaneous CTR and future trend direction proxies. Under rigorous 5-fold GroupKFold cross-validation grouped by client domain, a regularized Random Forest classifier achieves a mean ROC-AUC of 0.922 (±0.035) and a Precision@100 of 65.6%, delivering a 6.56× lift over the 10.01% random base rate. These scores directly populate a human-reviewed operational action playbook featuring concrete reason codes, mandatory editorial review gates, and explicit automation guardrails.
+      </p>
+    </section>
+
+    <!-- Paper Content Sections -->
+    <article class="paper-body">
+
+      <!-- Section 2: Introduction & Problem Statement -->
+      <section class="paper-section" id="problem">
+        <div class="section-header">
+          <span class="section-tag">01 / OVERVIEW</span>
+          <h2 class="section-title">Introduction &amp; Problem Statement</h2>
+        </div>
+        <p class="lead-p">
+          In large enterprise content estates, organic traffic follows a severe power-law distribution. While top-ranking head terms receive continuous manual curation, thousands of mid-tier and long-tail pages languish with suboptimal titles and search snippets.
+        </p>
+        <p class="body-p">
+          An editorial squad typically has capacity to audit and rewrite 50 to 100 pages per month. Today, this selection is performed through ad-hoc sorting on raw search impressions or manual intuition. This practice introduces two severe operational failure modes:
+        </p>
+        <div class="two-col">
+          <div class="callout-card accent-rose">
+            <div class="callout-heading">False Positives (Wasted Editorial Hours)</div>
+            <p class="body-p" style="margin-bottom:0;font-size:0.92rem;">
+              Rewriting snippets on pages that already perform at their natural ceiling for their SERP layout. Modifying stable titles introduces ranking volatility and squanders 2–4 copywriter hours per URL.
+            </p>
+          </div>
+          <div class="callout-card accent-amber">
+            <div class="callout-heading">False Negatives (Dormant Click Volume)</div>
+            <p class="body-p" style="margin-bottom:0;font-size:0.92rem;">
+              Leaving high-impression URLs (e.g. Page 1 positions 4–8) unaddressed when their CTR lags direct tier peers by 30–60%. A simple value proposition title tweak could capture thousands of monthly search visits.
+            </p>
+          </div>
+        </div>
+        <p class="body-p">
+          <strong>Decision Supported:</strong> We build an automated prioritization queue that ranks every candidate URL by its statistical likelihood of suffering from an addressable CTR deficit, pairing each prediction with an interpretable reason code and remediation action.
+        </p>
+      </section>
+
+      <!-- Section 3: Data Safety & Exclusions -->
+      <section class="paper-section" id="data">
+        <div class="section-header">
+          <span class="section-tag">02 / DATASET</span>
+          <h2 class="section-title">Data Specification &amp; Public Safety</h2>
+        </div>
+        <p class="lead-p">
+          This study is conducted on the <strong>FlyRank ML Internship Dataset Release (March 2026 panel)</strong>, sampled from production warehouse telemetry across 79 million multi-client organic search rows.
+        </p>
+        <p class="body-p">
+          To build a reliable decision-support sample, we filter the anonymized release to a working slice of <strong>22,006 URLs</strong> spanning <strong>30 distinct enterprise client domains</strong> under the following verified criteria:
+        </p>
+        <ul class="check-list">
+          <li><strong>Valid Ranking History:</strong> <code>avg_position &gt; 0</code> (verifies active Google SERP presence).</li>
+          <li><strong>Sample Viability:</strong> <code>impressions_90d &gt;= 100</code> (ensures sufficient click sample size to measure CTR reliably).</li>
+          <li><strong>Position Tier Coverage:</strong> Explicit assignment across standard SERP tiers: <code>top_3</code>, <code>page_1</code>, <code>striking</code> (pos 11–20), <code>page_3_5</code>, and <code>deep</code>.</li>
+        </ul>
+        <div class="callout-card accent-purple">
+          <div class="callout-heading">Strict Public Safety &amp; Leakage Governance</div>
+          <p class="body-p" style="margin-bottom:0;font-size:0.92rem;">
+            In compliance with production privacy and competition agreements, zero raw search queries, customer brand names, private URL paths, or client company identities are included in this paper or committed code. Furthermore, forward-looking columns (such as <code>trend_direction</code>, <code>trend_pct</code>, and subsequent 30-day click counts) are strictly blocked from the training frame to prevent temporal leakage.
+          </p>
+        </div>
+      </section>
+
+      <!-- Section 4: Methodology -->
+      <section class="paper-section" id="methodology">
+        <div class="section-header">
+          <span class="section-tag">03 / METHODOLOGY</span>
+          <h2 class="section-title">Methodology &amp; Validation Design</h2>
+        </div>
+        <p class="lead-p">
+          Rather than predicting absolute future click numbers (which depend heavily on macroeconomic seasonality), we frame the task as <strong>identifying pages exhibiting severe relative CTR underperformance</strong>.
+        </p>
+
+        <h3 style="color:#ffffff;font-size:1.15rem;margin:1.5rem 0 0.5rem;">Target Label Formulation</h3>
+        <p class="body-p">
+          Within each position tier, organic CTR follows a right-skewed distribution. We define a binary opportunity label, <code>is_low_ctr_for_tier</code>, flagging any page whose CTR falls below the 25th percentile (P25) of its ranking tier:
+        </p>
+        <pre class="code-block">y = 1 if CTR &lt; Tier_P25(Position_Tier) else 0  # Base Rate = 10.01% (2,202 positives)</pre>
+
+        <h3 style="color:#ffffff;font-size:1.15rem;margin:1.5rem 0 0.5rem;">Five Clean Features (Knowable at Decision Time)</h3>
+        <p class="body-p">
+          To prevent the model from trivially reversing the label formula, contemporaneous CTR and raw click counts are excluded. Instead, the model operates over 5 orthogonal signals:
+        </p>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Feature Name</th>
+                <th>Source</th>
+                <th>Signal Rationale</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>avg_pos_month</code></td>
+                <td>Search Console</td>
+                <td>Continuous ranking position on Google SERP; governs expected click curve.</td>
+              </tr>
+              <tr>
+                <td><code>log_imp_month</code></td>
+                <td>Search Console</td>
+                <td>Log-transformed impression volume; isolates high-stakes search visibility.</td>
+              </tr>
+              <tr>
+                <td><code>ga4_eng_rate</code></td>
+                <td>Google Analytics 4</td>
+                <td>On-page user engagement; differentiates good content from broken pages.</td>
+              </tr>
+              <tr>
+                <td><code>pct_days_with_impressions</code></td>
+                <td>Search Console</td>
+                <td>Ranking stability; proportion of days active over 90-day observation window.</td>
+              </tr>
+              <tr>
+                <td><code>days_since_update</code></td>
+                <td>CMS Telemetry</td>
+                <td>Content staleness; identifies older snippets that have drifted from user intent.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="color:#ffffff;font-size:1.15rem;margin:1.5rem 0 0.5rem;">Cross-Client Grouped Validation</h3>
+        <p class="body-p">
+          A standard random train-test split suffers from severe cross-domain memorization: the model can learn client-specific domain authority or structural biases. We employ strict <strong>5-fold GroupKFold cross-validation grouped by <code>client_id</code></strong>. In every fold, models are trained on 24 clients and tested exclusively on 6 unseen client domains.
+        </p>
+      </section>
+
+      <!-- Section 5: Results -->
+      <section class="paper-section" id="results">
+        <div class="section-header">
+          <span class="section-tag">04 / EXPERIMENTAL EVALUATION</span>
+          <h2 class="section-title">Results: Model vs. Baseline Comparison</h2>
+        </div>
+        <p class="lead-p">
+          We benchmark our Random Forest opportunity model against linear baselines and the naive random selection rate (10.01% base rate). All models are evaluated across the exact same 5-fold GroupKFold splits.
+        </p>
+
+        <!-- Benchmark Table -->
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Approach</th>
+                <th>Group CV ROC-AUC</th>
+                <th>Precision @ 20</th>
+                <th>Precision @ 50</th>
+                <th>Precision @ 100</th>
+                <th>Lift vs. Base Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Random Baseline (Base Rate)</strong></td>
+                <td>0.500</td>
+                <td>10.0%</td>
+                <td>10.0%</td>
+                <td>10.0%</td>
+                <td>1.00×</td>
+              </tr>
+              <tr>
+                <td><strong>Logistic Regression (Linear)</strong></td>
+                <td>0.868</td>
+                <td>45.0%</td>
+                <td>46.0%</td>
+                <td>45.0%</td>
+                <td>4.50×</td>
+              </tr>
+              <tr>
+                <td><strong>Decision Tree (Depth 3)</strong></td>
+                <td>0.909</td>
+                <td>50.0%</td>
+                <td>52.0%</td>
+                <td>51.0%</td>
+                <td>5.10×</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Random Forest (Lane 4 Model)</strong></td>
+                <td><strong>0.922 <span class="badge-win">BEST</span></strong></td>
+                <td><strong>70.0%</strong></td>
+                <td><strong>68.0%</strong></td>
+                <td><strong>65.6%</strong></td>
+                <td><strong>6.56× Lift</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="body-p" style="font-size:0.9rem;color:var(--text-subtle);">
+          *Table note: Evaluated over 5-fold GroupKFold by client_id. Baseline rule (using contemporaneous CTR) achieves 0.988 AUC because it directly reconstructs the label formula. Among non-leaked operational models, Random Forest dominates across all precision cutoffs.*
+        </p>
+
+        <!-- Charts Grid -->
+        <div class="figure-wrapper">
+          <img src="figures/fig_precision_at_k.png" alt="Precision at K Comparison Curve" class="figure-image">
+          <div class="figure-caption">
+            <strong>Figure 1: Precision@K Curve across Queue Depths.</strong> The Random Forest model delivers sustained precision above 65% across the top-100 queue depth, providing content managers with over 65 verified high-opportunity URLs per 100 audited pages—a 6.56× improvement over random auditing.
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="figure-wrapper" style="margin:0;">
+            <img src="figures/fig_score_by_tier.png" alt="Opportunity Score by SERP Position Tier" class="figure-image">
+            <div class="figure-caption">
+              <strong>Figure 2: Score Distribution by Position Tier.</strong> Striking distance (pos 11–20) and Page 1 show the widest opportunity variance, confirming that ranking alone does not dictate CTR health.
+            </div>
+          </div>
+          <div class="figure-wrapper" style="margin:0;">
+            <img src="figures/fig_action_distribution.png" alt="Recommended Action Distribution" class="figure-image">
+            <div class="figure-caption">
+              <strong>Figure 3: Recommended Action Distribution.</strong> 12.4% of URLs qualify for immediate CTR Title Rewrites, while 61.2% are recognized as stable, healthy pages requiring zero editorial expenditure.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Limitations & Honest Framing -->
+      <section class="paper-section" id="limitations">
+        <div class="section-header">
+          <span class="section-tag">05 / INTEGRITY</span>
+          <h2 class="section-title">Limitations &amp; Honest Framing</h2>
+        </div>
+        <p class="lead-p">
+          Trustworthy machine learning requires articulating precisely what the model <em>cannot</em> claim. We explicitly state the following constraints:
+        </p>
+        <div class="callout-card accent-amber">
+          <div class="callout-heading">Observational Deficit vs. Causal Guarantee</div>
+          <p class="body-p" style="margin-bottom:0;font-size:0.92rem;">
+            This model detects statistical underperformance relative to empirical peer tiers; it <strong>does not prove causality</strong>. Rewriting a title tag will not magically increase clicks if the search intent is inherently commercial and the page is purely informational. The model is a <strong>decision-support prioritization tool</strong>, not an autonomous ranking engine.
+          </p>
+        </div>
+
+        <h3 style="color:#ffffff;font-size:1.15rem;margin:1.5rem 0 0.5rem;">Concrete Failure Modes (Error Analysis)</h3>
+        <ul class="check-list" style="list-style:none;">
+          <li style="margin-bottom:1rem;">
+            <strong style="color:#ffffff;">False Negatives (Missed High-Value Opportunities):</strong> In held-out client tests, pages with top rankings (pos 1.2–2.5) and high impressions (5,000+) but modest CTR frequently receive lower model probabilities if their on-page engagement rate is very high (&gt;0.65). The model misinterprets high engagement as an indicator of general page health, overlooking that the SERP title snippet fails to hook the searcher.
+          </li>
+          <li>
+            <strong style="color:#ffffff;">Unobserved SERP Architecture:</strong> Tabular Google Search Console data lacks layout context—such as the presence of Google AI Overviews, Featured Snippets, local map packs, or 4-pack sponsored ads. In queries with heavy SERP feature crowding, organic CTR is naturally suppressed regardless of title quality.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Section 7: Ranked Recommendations (Playbook) -->
+      <section class="paper-section" id="playbook">
+        <div class="section-header">
+          <span class="section-tag">06 / RECOMMENDATIONS</span>
+          <h2 class="section-title">Ranked Content Action Playbook</h2>
+        </div>
+        <p class="lead-p">
+          Predictions are converted into concrete editorial interventions through deterministic rule mapping paired with calibrated probability scores:
+        </p>
+
+        <div class="playbook-grid">
+          <div class="playbook-card">
+            <span class="playbook-code">ACTION 01 · RC_HIGH_IMP_LOW_CTR</span>
+            <div class="playbook-title">CTR Title &amp; Snippet Rewrite</div>
+            <div class="playbook-desc">
+              High-impression URLs on Page 1 / striking distance with CTR below tier P25. Intervention: rewrite meta title to frontload primary intent, add structured schema, clarify value proposition within 600px width.
+            </div>
+          </div>
+          <div class="playbook-card">
+            <span class="playbook-code">ACTION 02 · RC_THIN_CONTENT_UNDERPERFORM</span>
+            <div class="playbook-title">Expand Thin Content</div>
+            <div class="playbook-desc">
+              Pages with &lt;600 words and engagement rate &lt;0.35. Intervention: expand topic coverage, address secondary questions, embed illustrative visual aids.
+            </div>
+          </div>
+          <div class="playbook-card">
+            <span class="playbook-code">ACTION 03 · RC_HIGH_BOUNCE_POOR_TIME</span>
+            <div class="playbook-title">Engagement Restructuring</div>
+            <div class="playbook-desc">
+              High search visibility but severe bounce rate (&gt;75%). Intervention: add an above-the-fold table of contents, optimize mobile font sizing, eliminate intrusive popups.
+            </div>
+          </div>
+          <div class="playbook-card">
+            <span class="playbook-code">ACTION 04 · RC_STALE_POSITION_DROP</span>
+            <div class="playbook-title">Monitor Aging &amp; Decay</div>
+            <div class="playbook-desc">
+              Content older than 180 days showing initial ranking degradation. Intervention: verify factual accuracy, refresh outdated statistics, update publication timestamps.
+            </div>
+          </div>
+        </div>
+
+        <h3 style="color:#ffffff;font-size:1.15rem;margin:2rem 0 0.5rem;">Strict Automation No-Go List</h3>
+        <div class="callout-card accent-rose">
+          <div class="callout-heading">What Must NOT Be Automated</div>
+          <ul class="no-go-list">
+            <li><strong>❌ Never auto-publish rewritten title tags</strong> directly to CMS without editorial sign-off.</li>
+            <li><strong>❌ Never mass-deindex or consolidate URLs</strong> based solely on model opportunity probabilities.</li>
+            <li><strong>❌ Never alter top-quartile revenue-driving URLs</strong> through unmonitored algorithmic triggers.</li>
+          </ul>
+        </div>
+
+        <h3 style="color:#ffffff;font-size:1.15rem;margin:2rem 0 0.5rem;">Mandatory 4-Step Human Review Protocol</h3>
+        <ol style="padding-left:1.5rem;color:#cbd5e1;line-height:1.8;">
+          <li><strong>SERP Intent Validation:</strong> Verify that ranking queries align with page value proposition.</li>
+          <li><strong>Branded Query Audit:</strong> Confirm that low CTR is not an artifact of navigational competitor searches.</li>
+          <li><strong>Snippet Pixel Width Check:</strong> Ensure revised titles fit within Google's 600px desktop truncation limit.</li>
+          <li><strong>21-Day A/B Monitoring:</strong> Track CTR lift and position changes for 21 days; revert immediately if position drops &gt;2 spots.</li>
+        </ol>
+      </section>
+
+      <!-- Section 8: Reproducibility -->
+      <section class="paper-section" id="reproducibility">
+        <div class="section-header">
+          <span class="section-tag">07 / REPRODUCIBILITY</span>
+          <h2 class="section-title">Reproducibility &amp; Artifact Traceability</h2>
+        </div>
+        <p class="lead-p">
+          To ensure complete scientific reproducibility, all code, experiment notebooks, figures, and metric JSON receipts are committed and publicly accessible in the repository.
+        </p>
+        <pre class="code-block">
+# Re-run all experiments top-to-bottom from fresh clone:
+git clone https://github.com/JanaMoustafa/FlyRank-ML.git
+cd FlyRank-ML
+jupyter nbconvert --to notebook --execute --inplace work/notebooks/capstone.ipynb
+        </pre>
+        <div class="two-col">
+          <div class="callout-card">
+            <div class="callout-heading">Environment Specification</div>
+            <p class="body-p" style="margin-bottom:0;font-size:0.9rem;">
+              Python 3.12 · scikit-learn 1.4.2 · pandas 2.2.1 · numpy 1.26.4 · matplotlib 3.8.3.<br>
+              Deterministic seed: <code>RANDOM_SEED = 42</code> fixed across all splits.
+            </p>
+          </div>
+          <div class="callout-card">
+            <div class="callout-heading">Key Repository Links</div>
+            <p class="body-p" style="margin-bottom:0;font-size:0.9rem;">
+              • <a href="https://github.com/JanaMoustafa/FlyRank-ML/blob/main/work/notebooks/capstone.ipynb" target="_blank" style="color:var(--accent-primary);">Capstone Notebook (Full Run) ↗</a><br>
+              • <a href="https://github.com/JanaMoustafa/FlyRank-ML/blob/main/work/outputs/capstone_metrics.json" target="_blank" style="color:var(--accent-primary);">Metrics Receipt JSON ↗</a><br>
+              • <a href="https://github.com/JanaMoustafa/FlyRank-ML/tree/main/work/notebooks" target="_blank" style="color:var(--accent-primary);">Experiment Notebooks (w01–w07) ↗</a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 9: Acknowledgments & Data Credit -->
+      <section class="credit-section" id="acknowledgments">
+        <h3 class="credit-title">Acknowledgments &amp; Data Credit</h3>
+        <p class="credit-text">
+          Built on the <strong>FlyRank ML Internship dataset</strong>. We thank the FlyRank ML Engineering team for providing access to multi-tenant production search telemetry and curriculum infrastructure that made this research possible.
+        </p>
+        <a href="https://flyrank.ai" target="_blank" class="credit-link-btn">
+          <span>Explore FlyRank Platform (flyrank.ai)</span>
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h6V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-6h-2v6H5V5z"/></svg>
+        </a>
+      </section>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 Jana Moustafa · FlyRank ML Research Paper · Deployed via GitHub Pages</p>
+    <p style="margin-top:0.4rem;font-size:0.8rem;color:var(--text-subtle);">Data Credit: <a href="https://flyrank.ai" target="_blank" style="color:var(--text-muted);">https://flyrank.ai</a> · All metrics audited under GroupKFold cross-validation.</p>
+  </footer>
+
+</body>
+</html>
