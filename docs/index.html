@@ -52,7 +52,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Ambient background lighting */
     .bg-gradient-top {
       position: fixed;
       top: 0;
@@ -546,6 +545,7 @@
       color: #e2e8f0;
       overflow-x: auto;
       margin: 1rem 0;
+      line-height: 1.6;
     }
 
     ul.check-list {
@@ -588,6 +588,48 @@
       left: 0;
       color: var(--accent-rose);
       font-weight: 800;
+    }
+
+    /* Showcase & Timeline Styling */
+    .timeline-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      align-items: flex-start;
+    }
+
+    .timeline-badge {
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      white-space: nowrap;
+    }
+
+    .timeline-content h4 {
+      color: #ffffff;
+      font-size: 1rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .timeline-content p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
     }
 
     /* Acknowledgments & Credit Card */
@@ -659,10 +701,12 @@
       </a>
       <nav class="header-nav">
         <a href="#abstract" class="nav-link">Abstract</a>
+        <a href="#case-study" class="nav-link">Case Study</a>
         <a href="#methodology" class="nav-link">Methodology</a>
         <a href="#results" class="nav-link">Results</a>
         <a href="#playbook" class="nav-link">Playbook</a>
-        <a href="#reproducibility" class="nav-link">Reproducibility</a>
+        <a href="#showcase" class="nav-link">Showcase &amp; Cuts</a>
+        <a href="#reproducibility" class="nav-link">Code</a>
         <a href="https://github.com/JanaMoustafa/FlyRank-ML" target="_blank" class="github-badge-btn">
           <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
           <span>GitHub</span>
@@ -678,7 +722,7 @@
       <span class="lane-pill">Lane 4 · CTR &amp; Engagement Opportunity Scoring</span>
       <h1 class="paper-title">SEO CTR Opportunity Scoring at Scale</h1>
       <p class="paper-subtitle">
-        Prioritizing Enterprise Content Interventions from Search Console &amp; GA4 Telemetry Under Cross-Client Grouped Validation
+        A Production Case Study: Replacing Static Heuristic Flags with Cross-Client Learned Prioritization on 22,000+ Enterprise URLs
       </p>
       <div class="paper-meta">
         <span class="meta-item"><span class="meta-author">Jana Moustafa</span></span>
@@ -718,7 +762,7 @@
         <span class="abstract-title">Abstract (Canonical Summary)</span>
       </div>
       <p class="abstract-text">
-        Enterprise search engine optimization teams manage catalogs of tens of thousands of indexable URLs but lack disciplined, data-driven queues indicating where title rewrites or snippet refreshes will yield the greatest incremental organic clicks. In this work, we analyze 22,006 production URL performance records across 30 enterprise domains from the FlyRank warehouse release to detect pages exhibiting severe click-through rate (CTR) underperformance relative to their organic position tier. We formulate a leak-free feature space comprising 5 behavioral, positional, and content freshness indicators knowable strictly at the decision moment, deliberately excluding contemporaneous CTR and future trend direction proxies. Under rigorous 5-fold GroupKFold cross-validation grouped by client domain, a regularized Random Forest classifier achieves a mean ROC-AUC of 0.922 (±0.035) and a Precision@100 of 65.6%, delivering a 6.56× lift over the 10.01% random base rate. These scores directly populate a human-reviewed operational action playbook featuring concrete reason codes, mandatory editorial review gates, and explicit automation guardrails.
+        FlyRank operates an autonomous content-as-infrastructure platform that researches, publishes, and continuously optimizes enterprise content across millions of organic search rankings. In production, editorial intervention queues have traditionally relied on hand-written heuristic flags (such as static <code>needs-attention</code> and position-agnostic CTR rules) that fail to capture non-linear interactions across SERP position tiers, search volumes, and dwell telemetry. In this capstone case study, we analyze 22,006 production URL performance records across 30 enterprise domains from the FlyRank warehouse release to detect pages exhibiting severe click-through rate (CTR) underperformance relative to their organic position tier. We formulate a leak-free feature space comprising 5 behavioral, positional, and content freshness indicators knowable strictly at the decision moment, deliberately excluding contemporaneous CTR and future trend direction proxies. Under rigorous 5-fold GroupKFold cross-validation grouped by client domain, a regularized Random Forest classifier achieves a mean ROC-AUC of 0.922 (±0.035) and a Precision@100 of 65.6%, delivering a 6.56× lift over the 10.01% random base rate and outperforming linear benchmarks by +20.6 percentage points. These predictions directly power an operational content action playbook with clear reason codes, human-review safeguards, and strict exclusion of unreviewed automation.
       </p>
     </section>
 
@@ -726,57 +770,61 @@
     <article class="paper-body">
 
       <!-- Section 2: Introduction & Problem Statement -->
-      <section class="paper-section" id="problem">
+      <section class="paper-section" id="case-study">
         <div class="section-header">
-          <span class="section-tag">01 / OVERVIEW</span>
-          <h2 class="section-title">Introduction &amp; Problem Statement</h2>
+          <span class="section-tag">01 / CASE STUDY &amp; PROBLEM STATEMENT</span>
+          <h2 class="section-title">The FlyRank Content Dilemma: Beating Static Heuristics</h2>
         </div>
         <p class="lead-p">
-          In large enterprise content estates, organic traffic follows a severe power-law distribution. While top-ranking head terms receive continuous manual curation, thousands of mid-tier and long-tail pages languish with suboptimal titles and search snippets.
+          <strong>FlyRank builds content as infrastructure:</strong> its automated pipeline researches keyword topics, writes articles, publishes directly into client websites, and monitors search telemetry. But once content ranks on Google, it quietly decays—rankings fluctuate, competitor snippets evolve, and clicks decline.
         </p>
         <p class="body-p">
-          An editorial squad typically has capacity to audit and rewrite 50 to 100 pages per month. Today, this selection is performed through ad-hoc sorting on raw search impressions or manual intuition. This practice introduces two severe operational failure modes:
+          The critical operational question for FlyRank Customer Success Managers (CSMs) and enterprise content squads is:
+          <em style="color:#ffffff;">"Out of tens of thousands of indexed pages, which 50 to 100 pages should a human copywriter optimize first during a monthly sprint?"</em>
+        </p>
+        <p class="body-p">
+          Historically, FlyRank’s platform addressed this using hand-written heuristic flags (such as <code>quick-win</code> labels, <code>needs-attention</code> indicators, and position-agnostic CTR thresholds). While transparent, hard-coded rules introduce two severe operational failure modes:
         </p>
         <div class="two-col">
           <div class="callout-card accent-rose">
-            <div class="callout-heading">False Positives (Wasted Editorial Hours)</div>
+            <div class="callout-heading">False Alarms on Deep Ranks (Wasted Hours)</div>
             <p class="body-p" style="margin-bottom:0;font-size:0.92rem;">
-              Rewriting snippets on pages that already perform at their natural ceiling for their SERP layout. Modifying stable titles introduces ranking volatility and squanders 2–4 copywriter hours per URL.
+              Flagging deep-tier pages (e.g. position 18) for low CTR when sub-1% click-through is the natural baseline for that rank. Rewriting stable snippets risks ranking churn and squanders 2–4 copywriter hours per page.
             </p>
           </div>
           <div class="callout-card accent-amber">
-            <div class="callout-heading">False Negatives (Dormant Click Volume)</div>
+            <div class="callout-heading">Missed High-Value Deficits (Dormant Traffic)</div>
             <p class="body-p" style="margin-bottom:0;font-size:0.92rem;">
-              Leaving high-impression URLs (e.g. Page 1 positions 4–8) unaddressed when their CTR lags direct tier peers by 30–60%. A simple value proposition title tweak could capture thousands of monthly search visits.
+              Missing Page 1 URLs (positions 4–8) where a 2% CTR seems "acceptable" under generic rules, but actually represents a massive click deficit compared to the 5–7% tier median. A simple title hook tweak could reclaim thousands of monthly visits.
             </p>
           </div>
         </div>
         <p class="body-p">
-          <strong>Decision Supported:</strong> We build an automated prioritization queue that ranks every candidate URL by its statistical likelihood of suffering from an addressable CTR deficit, pairing each prediction with an interpretable reason code and remediation action.
+          <strong>The Solution:</strong> We replace fixed threshold heuristics with a learned Random Forest opportunity scoring engine that models multi-signal interactions across position tiers, search volumes, dwell metrics, and freshness—evaluating strictly on unseen client domains.
         </p>
       </section>
 
       <!-- Section 3: Data Safety & Exclusions -->
       <section class="paper-section" id="data">
         <div class="section-header">
-          <span class="section-tag">02 / DATASET</span>
-          <h2 class="section-title">Data Specification &amp; Public Safety</h2>
+          <span class="section-tag">02 / DATASET SPECIFICATION</span>
+          <h2 class="section-title">Data Provenance &amp; Public Safety</h2>
         </div>
         <p class="lead-p">
           This study is conducted on the <strong>FlyRank ML Internship Dataset Release (March 2026 panel)</strong>, sampled from production warehouse telemetry across 79 million multi-client organic search rows.
         </p>
         <p class="body-p">
-          To build a reliable decision-support sample, we filter the anonymized release to a working slice of <strong>22,006 URLs</strong> spanning <strong>30 distinct enterprise client domains</strong> under the following verified criteria:
+          To build a reliable decision-support sample, we filter the anonymized release to a working slice of <strong>22,006 URLs</strong> spanning <strong>30 distinct enterprise client domains</strong> under verified criteria:
         </p>
         <ul class="check-list">
-          <li><strong>Valid Ranking History:</strong> <code>avg_position &gt; 0</code> (verifies active Google SERP presence).</li>
-          <li><strong>Sample Viability:</strong> <code>impressions_90d &gt;= 100</code> (ensures sufficient click sample size to measure CTR reliably).</li>
-          <li><strong>Position Tier Coverage:</strong> Explicit assignment across standard SERP tiers: <code>top_3</code>, <code>page_1</code>, <code>striking</code> (pos 11–20), <code>page_3_5</code>, and <code>deep</code>.</li>
+          <li><strong>Valid SERP Impression History:</strong> <code>avg_position &gt; 0</code> (confirms active Google Search presence).</li>
+          <li><strong>Statistical Viability:</strong> <code>impressions_90d &gt;= 100</code> (ensures sufficient click sample size to evaluate CTR without small-number noise).</li>
+          <li><strong>Explicit Position Tier Mapping:</strong> URLs categorized across 5 organic search tiers: <code>top_3</code>, <code>page_1</code>, <code>striking</code> (pos 11–20), <code>page_3_5</code>, and <code>deep</code>.</li>
         </ul>
         <div class="callout-card accent-purple">
-          <div class="callout-heading">Strict Public Safety &amp; Leakage Governance</div>
+          <div class="callout-heading">Strict Public Safety &amp; Zero-Leakage Governance</div>
           <p class="body-p" style="margin-bottom:0;font-size:0.92rem;">
-            In compliance with production privacy and competition agreements, zero raw search queries, customer brand names, private URL paths, or client company identities are included in this paper or committed code. Furthermore, forward-looking columns (such as <code>trend_direction</code>, <code>trend_pct</code>, and subsequent 30-day click counts) are strictly blocked from the training frame to prevent temporal leakage.
+            In strict adherence to FlyRank's privacy and data governance standards, no raw search queries, customer brand names, private URL paths, or client identifiers appear in this research or committed code. Pseudonymous <code>client_id</code> values are strictly reserved for cross-validation grouping, never passed as model features.
           </p>
         </div>
       </section>
@@ -784,18 +832,18 @@
       <!-- Section 4: Methodology -->
       <section class="paper-section" id="methodology">
         <div class="section-header">
-          <span class="section-tag">03 / METHODOLOGY</span>
-          <h2 class="section-title">Methodology &amp; Validation Design</h2>
+          <span class="section-tag">03 / METHODOLOGY &amp; VALIDATION</span>
+          <h2 class="section-title">Leak-Free Methodology &amp; Grouped Validation</h2>
         </div>
         <p class="lead-p">
-          Rather than predicting absolute future click numbers (which depend heavily on macroeconomic seasonality), we frame the task as <strong>identifying pages exhibiting severe relative CTR underperformance</strong>.
+          Rather than predicting raw click counts (which fluctuate wildly with seasonal search trends), we frame the task as <strong>relative opportunity detection</strong>: identifying pages whose CTR significantly lags their positional peer group.
         </p>
 
         <h3 style="color:#ffffff;font-size:1.15rem;margin:1.5rem 0 0.5rem;">Target Label Formulation</h3>
         <p class="body-p">
-          Within each position tier, organic CTR follows a right-skewed distribution. We define a binary opportunity label, <code>is_low_ctr_for_tier</code>, flagging any page whose CTR falls below the 25th percentile (P25) of its ranking tier:
+          We define a binary opportunity label, <code>is_low_ctr_for_tier</code>, flagging pages whose historical 90-day CTR sits strictly below the 25th percentile (P25) of their respective position tier:
         </p>
-        <pre class="code-block">y = 1 if CTR &lt; Tier_P25(Position_Tier) else 0  # Base Rate = 10.01% (2,202 positives)</pre>
+        <pre class="code-block">y = 1 if CTR &lt; Tier_P25(Position_Tier) else 0  # Base Rate = 10.01% (2,202 positive opportunity URLs)</pre>
 
         <h3 style="color:#ffffff;font-size:1.15rem;margin:1.5rem 0 0.5rem;">Five Clean Features (Knowable at Decision Time)</h3>
         <p class="body-p">
@@ -840,9 +888,9 @@
           </table>
         </div>
 
-        <h3 style="color:#ffffff;font-size:1.15rem;margin:1.5rem 0 0.5rem;">Cross-Client Grouped Validation</h3>
+        <h3 style="color:#ffffff;font-size:1.15rem;margin:1.5rem 0 0.5rem;">Cross-Client Grouped Validation Design</h3>
         <p class="body-p">
-          A standard random train-test split suffers from severe cross-domain memorization: the model can learn client-specific domain authority or structural biases. We employ strict <strong>5-fold GroupKFold cross-validation grouped by <code>client_id</code></strong>. In every fold, models are trained on 24 clients and tested exclusively on 6 unseen client domains.
+          Standard random train-test splits cause severe optimistic bias because models memorize client domain authority. We evaluate all models using strict <strong>5-fold GroupKFold cross-validation grouped by <code>client_id</code></strong>. In every fold, models are trained on 24 clients and tested exclusively on 6 unseen client domains.
         </p>
       </section>
 
@@ -936,11 +984,11 @@
       <!-- Section 6: Limitations & Honest Framing -->
       <section class="paper-section" id="limitations">
         <div class="section-header">
-          <span class="section-tag">05 / INTEGRITY</span>
+          <span class="section-tag">05 / INTEGRITY &amp; BOUNDARIES</span>
           <h2 class="section-title">Limitations &amp; Honest Framing</h2>
         </div>
         <p class="lead-p">
-          Trustworthy machine learning requires articulating precisely what the model <em>cannot</em> claim. We explicitly state the following constraints:
+          Trustworthy machine learning requires articulating precisely what the model <em>cannot</em> claim:
         </p>
         <div class="callout-card accent-amber">
           <div class="callout-heading">Observational Deficit vs. Causal Guarantee</div>
@@ -1020,10 +1068,96 @@
         </ol>
       </section>
 
-      <!-- Section 8: Reproducibility -->
+      <!-- Section 8: Showcase & Shareable Cuts -->
+      <section class="paper-section" id="showcase">
+        <div class="section-header">
+          <span class="section-tag">07 / SHOWCASE &amp; SHAREABLE CUTS</span>
+          <h2 class="section-title">Week-8 Showcase Presentation &amp; Shareable Cuts</h2>
+        </div>
+        <p class="lead-p">
+          Research is only as impactful as its ability to travel. Below is the ready-to-present 5-minute showcase outline and two shareable cuts tailored for technical networks and prospective employers.
+        </p>
+
+        <h3 style="color:#ffffff;font-size:1.15rem;margin:1.5rem 0 0.75rem;">5-Minute Showcase Demo Outline</h3>
+        <div class="timeline-grid">
+          <div class="timeline-item">
+            <span class="timeline-badge">Minute 1</span>
+            <div class="timeline-content">
+              <h4>The FlyRank Problem &amp; Question</h4>
+              <p>FlyRank manages thousands of client URLs; editorial teams can only rewrite 50–100 pages per month. Legacy hand-written heuristic flags treat CTR uniformly, causing false alarms on deep tiers while ignoring Page 1 click leaks. Can ML prioritize true deficits using only clean metadata?</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-badge">Minute 2</span>
+            <div class="timeline-content">
+              <h4>The Method &amp; Leak-Free Design</h4>
+              <p>Trained on 22,006 production records across 30 enterprise domains. Operating strictly over 5 decision-time signals (position, volume, GA4 engagement, stability, freshness), validated via 5-fold GroupKFold by client domain to test cross-client generalization.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-badge">Minute 3</span>
+            <div class="timeline-content">
+              <h4>One Chart: The Precision@K Curve (Figure 1)</h4>
+              <p>Walk through <code>figures/fig_precision_at_k.png</code>: across the top-100 queue depth, the Random Forest maintains <strong>65.6% precision</strong>—ensuring that nearly 2 out of every 3 audited URLs are true high-impact opportunities, versus the 10.01% random baseline.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-badge">Minute 4</span>
+            <div class="timeline-content">
+              <h4>One Honest Result &amp; Boundaries</h4>
+              <p>Achieves <strong>0.922 ROC-AUC</strong> and <strong>6.56× precision lift</strong> over base rate. Acknowledge honest error boundaries: high dwell time masks snippet hook failures (False Negatives), and unobserved Google SERP features (AI Overviews, map packs) naturally depress CTR.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-badge">Minute 5</span>
+            <div class="timeline-content">
+              <h4>One Recommendation &amp; Guardrails</h4>
+              <p>The operational queue prioritizes <code>CTR_TITLE_REWRITE</code> on Page 1 / striking distance. Present the strict automation No-Go list (no auto-publishing, no touching top revenue URLs) and the 4-step human review sign-off.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="color:#ffffff;font-size:1.15rem;margin:2rem 0 0.75rem;">Cut 1: Methodology Social Post</h3>
+        <div class="callout-card">
+          <div class="callout-heading">Shareable LinkedIn / Twitter Post</div>
+          <pre class="code-block" style="margin:0.5rem 0 0;">Can machine learning beat static SEO heuristics when deciding which web pages to optimize? 🔍
+
+Most SEO teams rely on hand-written rules (e.g., "CTR < 2% = rewrite title"). But on real SERPs, position 18 naturally gets <1% CTR, while position 4 with 2% CTR is suffering from a massive click deficit.
+
+Working with 22,006 production URLs across 30 enterprise domains from FlyRank's search telemetry, I built a regularized Random Forest opportunity model using 5 leakage-free behavioral, positional, and freshness signals.
+
+Under strict 5-fold GroupKFold cross-validation (evaluating exclusively on unseen client domains), the model achieves:
+• 0.922 ROC-AUC (±0.035)
+• 65.6% Precision@100 (a 6.56× lift over the 10.01% random base rate)
+• +20.6 percentage points precision gain over linear benchmarks
+
+The output directly feeds an operational content action playbook with clear reason codes, 4-step human review safeguards, and strict automation limits.
+
+Read the full research paper & action playbook: https://janamoustafa.github.io/FlyRank-ML/
+Repo & code: https://github.com/JanaMoustafa/FlyRank-ML
+
+#MachineLearning #DataScience #SEO #FlyRank #GroupedValidation #Python</pre>
+        </div>
+
+        <h3 style="color:#ffffff;font-size:1.15rem;margin:2rem 0 0.75rem;">Cut 2: 3-Sentence Employer-Facing Summary</h3>
+        <div class="callout-card accent-emerald">
+          <div class="callout-heading">Executive Briefing (For Interviews &amp; Portfolios)</div>
+          <p class="body-p" style="margin-bottom:0.6rem;color:#ffffff;">
+            <strong>1. What I built:</strong> I engineered and validated an end-to-end SEO CTR opportunity scoring engine and operational action playbook that prioritizes high-impact content interventions for enterprise marketing teams.
+          </p>
+          <p class="body-p" style="margin-bottom:0.6rem;color:#ffffff;">
+            <strong>2. On what data:</strong> The model was trained on 22,006 multi-client URL performance records from FlyRank’s production search console and GA4 warehouse release, evaluated under strict 5-fold GroupKFold cross-validation to ensure reliable generalization across completely unseen client websites without data leakage.
+          </p>
+          <p class="body-p" style="margin-bottom:0;color:#ffffff;">
+            <strong>3. What it showed:</strong> The regularized Random Forest model achieved a 0.922 GroupKFold ROC-AUC and 65.6% Precision@100 (a 6.56× lift over the 10.01% base rate, beating linear baselines by +20.6%), translating complex multi-signal telemetry into prioritized editorial actions with explicit human-review guardrails.
+          </p>
+        </div>
+      </section>
+
+      <!-- Section 9: Reproducibility -->
       <section class="paper-section" id="reproducibility">
         <div class="section-header">
-          <span class="section-tag">07 / REPRODUCIBILITY</span>
+          <span class="section-tag">08 / REPRODUCIBILITY</span>
           <h2 class="section-title">Reproducibility &amp; Artifact Traceability</h2>
         </div>
         <p class="lead-p">
@@ -1054,7 +1188,7 @@ jupyter nbconvert --to notebook --execute --inplace work/notebooks/capstone.ipyn
         </div>
       </section>
 
-      <!-- Section 9: Acknowledgments & Data Credit -->
+      <!-- Section 10: Acknowledgments & Data Credit -->
       <section class="credit-section" id="acknowledgments">
         <h3 class="credit-title">Acknowledgments &amp; Data Credit</h3>
         <p class="credit-text">
